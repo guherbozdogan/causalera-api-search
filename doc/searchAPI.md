@@ -111,7 +111,8 @@ Returns the merged keyword result for search term in specified platforms
     **Content:** 
 ```javascript
     {
-	statusCode: 404,
+	id : '12dsljkwq9233809', 
+	statusCode: '404',
 	app: 'search.libs',
 	version: 'v0.1',
 	errorCode: '01',
@@ -125,12 +126,13 @@ Returns the merged keyword result for search term in specified platforms
     **Content:**
 ```javascript
     {
-	statusCode: 401,
+    	id : '12dsljkwq9233809', 
+	statusCode: '401',
 	app: 'search.libs',
 	version: 'v0.1',
 	errorCode: '01',
 	error : 'You are unauthorized to make this request.', 
-	errorPage: "https://causalera.io/errors/01',
+	errorPage: 'https://causalera.io/errors/01',
 	supportErrorCode: '111201'
 	}
 ```
@@ -140,7 +142,8 @@ Returns the merged keyword result for search term in specified platforms
     **Content:**
 ```javascript
     {
-	statusCode: 500,
+    	id : '12dsljkwq9233809', 
+	statusCode: '500',
 	app: 'search.libs',
 	version: 'v0.1',
 	errorCode: '01',
@@ -156,7 +159,7 @@ Returns the merged keyword result for search term in specified platforms
 
 ```curl
 curl --request GET \
-  --url 'https://localhost/v1/search/libs/guice?excluded=github%2Ccausalera' \
+  --url 'https://localhost/v0_1/search/libs/guice?excluded=github%2Ccausalera' \
   --header 'authorization: Bearer aaaaaaaaaaaaa.bbbbbbbbbbbbbb.cccccccccccccc' \
   --header 'content-type: application/json' \
   --data '{
