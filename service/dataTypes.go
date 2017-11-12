@@ -1,41 +1,17 @@
 package maven
 
-/*
-	id : '12dsljkwq9233809',
-		app: 'search.libs',
-		version: 'v0.1',
-		startId: '347289fsdkjhdf',
-		direction: 'up',
-		metaData: {
-		rowCount: 10},
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+)
 
-				id : '12dsljkwq9233809',
-		app: 'search.libs',
-		version: 'v0.1',
-		metaData: {
-		rowCount: 10 },
-		resultSet: [
-		{
-			id:'1',
-			repoType:'maven',
-			params: {
-				groupId: '',
-				artifactId: ''
-				},
-			imgURI:'',
-			description: ' '} ,
-
-			{
-			id:'2',
-			repoType:'maven',
-			params: {
-				groupId: '',
-				artifactId: ''
-				},
-			imgURI:'',
-			description: ' '} ]
-
-*/
+//
+//func (e SearchAPIError) Headers() http.Header {
+//
+//	//return e.errorJsonBytes, nil
+//
+//}
 
 type SearchAPIRequest struct {
 	id        string `json:"id,omitempty"`

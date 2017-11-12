@@ -14,9 +14,12 @@ type Endpoints struct {
 
 func MakeSimpleSearchReturnLatestVersionsofTermBeingEitherGroupIDorArtifactIDEndPoint(s SearchService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+
 		searchAPIReq := request.(SearchAPIRequest)
+
 		v, err := s.SimpleSearchReturnLatestVersionsofTermBeingEitherGroupIDorArtifactID(ctx,
 			searchAPIReq)
+
 		return v, err
 	}
 }

@@ -8,6 +8,10 @@ import (
 //"strings"
 )
 
+type ErrorResponse struct {
+	StatusCode int
+	ErrorMsg   string
+}
 type SimpleSearchReturnAllVersionsofFullySpecifiedGroupIdAndArtifactIDRequest struct {
 	SearchKeyWord string
 	RowCount      int

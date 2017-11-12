@@ -35,7 +35,7 @@ import (
 	//	"github.com/guherbozdogan/kit/tracing/opentracing"
 )
 
-func main() {
+func RunServices(errc chan error) {
 	var (
 		//debugAddr        = flag.String("debug.addr", ":8080", "Debug and metrics listen address")
 		httpAddr = flag.String("http.addr", ":8081", "HTTP listen address")
@@ -175,16 +175,9 @@ func main() {
 		SimpleSearchReturnLatestVersionsofTermBeingEitherGroupIDorArtifactIDEndPoint: searchEndpoint,
 	}
 
-	// Mechanical domain.
-	errc := make(chan error)
 	//ctx := context.Background()
 
 	// Interrupt handler.
-	go func() {
-		c := make(chan os.Signal, 1)
-		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
-		errc <- fmt.Errorf("%s", <-c)
-	}()
 
 	// Debug listener.
 	//go func() {
@@ -212,4 +205,16 @@ func main() {
 
 	logger.Log("exit", <-errc)
 
+}
+func main() {
+
+	errc := make(chan error)
+
+	go func() {
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
+		errc <- fmt.Errorf("%s", <-c)
+	}()
+
+	RunServices(errc)
 }

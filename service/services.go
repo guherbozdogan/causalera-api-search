@@ -15,6 +15,7 @@ import (
 	"time"
 	//	"fmt"
 	"errors"
+	"github.com/guherbozdogan/causalera-api-search/common"
 	"strconv"
 )
 
@@ -50,11 +51,13 @@ func (s searchServiceImp) SimpleSearchReturnLatestVersionsofTermBeingEitherGroup
 	resp, err := s.endPoints.SimpleSearchReturnLatestVersionsofTermBeingEitherGroupIDorArtifactID(context.Background(),
 		inp)
 
-	if resp == nil {
-		return resp, systemErr
-	}
 	if err != nil {
-		return resp, err
+		errTmp, isOk := err.(common.APIError)
+		if isOk {
+			errTmp.Id = req.id
+			return nil, errTmp
+		}
+		return nil, err
 	}
 
 	response := resp.(mavenCli.SimpleSearchReturnAllVersionsofFullySpecifiedGroupIdAndArtifactIDResponse)
@@ -109,7 +112,7 @@ func (mw serviceLoggingMiddleware) SimpleSearchReturnLatestVersionsofTermBeingEi
 	ctx context.Context, req SearchAPIRequest) (interface{}, error) {
 	defer func(begin time.Time) {
 		mw.logger.Log(
-			"method", "Sum",
+			"method", "search",
 			//	"a", a, "b", b, "result", v, "error", err,
 			"took", time.Since(begin),
 		)

@@ -25,6 +25,7 @@ import (
 
 	stdopentracing "github.com/opentracing/opentracing-go"
 
+	"github.com/guherbozdogan/causalera-api-search/common"
 	"github.com/guherbozdogan/kit/tracing/opentracing"
 	httptransport "github.com/guherbozdogan/kit/transport/http"
 )
@@ -41,14 +42,6 @@ func errorEncoder(_ context.Context, err error, w http.ResponseWriter) {
 	json.NewEncoder(w).Encode(errorWrapper{Error: msg})
 }
 
-func errorDecoder(r *http.Response) error {
-	var w errorWrapper
-	if err := json.NewDecoder(r.Body).Decode(&w); err != nil {
-		return err
-	}
-	return errors.New(w.Error)
-}
-
 func encodeSimpleSearchAPIResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
 	return json.NewEncoder(w).Encode(response)
 }
@@ -58,6 +51,18 @@ func decodeSimpleSearchAPIReq(_ context.Context, r *http.Request) (interface{}, 
 	var req SearchAPIRequest
 
 	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+
+		tmpErr := common.APIError{
+			StatusCodeVal: 500,
+			ErrorDesc:     StrJSONParseErrorDesc,
+			ErrorCode:     SystemCode + SubsystemCode + StrJSONParseErrorCode,
+			ErrorPage:     "", Version: common.StrVersion,
+			SupportErrorCode: SystemCode + SubsystemCode + StrJSONParseErrorCode,
+		}
+		return nil, tmpErr
+	}
+
 	return req, err
 }
 

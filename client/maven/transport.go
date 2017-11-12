@@ -4,6 +4,7 @@ package maven
 import (
 	"context"
 	"encoding/json"
+	common "github.com/guherbozdogan/causalera-api-search/common"
 	//"github.com/dgrijalva/jwt-go/request"
 	//"github.com/guherbozdogan/kit/endpoint"
 	//httptransport "github.com/guherbozdogan/kit/transport/http"
@@ -16,6 +17,7 @@ import (
 	//	"net/url"
 	//	"io/ioutil"
 	//	"io/ioutil"
+	"errors"
 	"io/ioutil"
 	"log"
 )
@@ -59,6 +61,31 @@ func encodeSimpleSearchReturnLatestVersionsofTermBeingEitherGroupIDorArtifactID(
 
 }
 
+func errorDecoder(resp *http.Response) error {
+	//log things here later
+
+	tmpErr := common.APIError{
+		StatusCodeVal: resp.StatusCode,
+		ErrorPage:     "", Version: common.StrVersion,
+	}
+
+	bodyBytes, errReadRsp := ioutil.ReadAll(resp.Body)
+	if errReadRsp != nil {
+
+		tmpErr.ErrorDesc = StrJSONParseErrorDesc
+		tmpErr.ErrorCode = SystemCode + SubsystemCode + StrJSONParseErrorCode
+		tmpErr.SupportErrorCode = SystemCode + SubsystemCode + StrInternalServerErrorCode
+
+		return tmpErr
+	}
+
+	tmpErr.ErrorCode = SystemCode + SubsystemCode + StrMAVENRESTAPIErrorCode
+	tmpErr.SupportErrorCode = SystemCode + SubsystemCode + StrMAVENRESTAPIErrorCode
+	tmpErr.ErrorDesc = StrMAVENRESTAPIErrorDesc + string(bodyBytes)
+
+	return tmpErr
+
+}
 func decodeSimpleSearchReturnLatestVersionsofTermBeingEitherGroupIDorArtifactID(_ context.Context, resp *http.Response) (interface{}, error) {
 
 	defer func() {
@@ -67,14 +94,25 @@ func decodeSimpleSearchReturnLatestVersionsofTermBeingEitherGroupIDorArtifactID(
 		}
 	}()
 
+	if resp.StatusCode != http.StatusOK {
+		return nil, errorDecoder(resp)
+	}
 	var response SimpleSearchReturnAllVersionsofFullySpecifiedGroupIdAndArtifactIDResponse
 	bodyBytes, errReadRsp := ioutil.ReadAll(resp.Body)
 
 	if errReadRsp == nil {
 
 		if err := json.Unmarshal(bodyBytes, &response); err != nil {
+
+			tmpErr := common.APIError{
+				StatusCodeVal: 500,
+				ErrorDesc:     StrJSONParseErrorDesc,
+				ErrorCode:     SystemCode + SubsystemCode + StrInternalServerErrorCode,
+				ErrorPage:     "", Version: common.StrVersion,
+				SupportErrorCode: SystemCode + SubsystemCode + StrInternalServerErrorCode,
+			}
 			log.Fatal(err)
-			return response, err
+			return nil, tmpErr
 		}
 
 		bodyString := string(bodyBytes)
@@ -84,5 +122,13 @@ func decodeSimpleSearchReturnLatestVersionsofTermBeingEitherGroupIDorArtifactID(
 
 	}
 
-	return response, errReadRsp
+	tmpErr := common.APIError{
+		StatusCodeVal: 500,
+		ErrorDesc:     StrMAVENRESTAPIErrorDesc + errReadRsp.Error(),
+		ErrorCode:     SystemCode + SubsystemCode + StrMAVENRESTAPIErrorCode,
+		ErrorPage:     "", Version: common.StrVersion,
+		SupportErrorCode: SystemCode + SubsystemCode + StrMAVENRESTAPIErrorCode,
+	}
+
+	return nil, tmpErr
 }
