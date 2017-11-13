@@ -10,8 +10,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
-	"strconv"
+	//"net/url"
+	//	"strconv"
 )
 
 func encodeSearchAPIRequestWithBytes(ctx context.Context, r *http.Request, request interface{}) error {
@@ -21,9 +21,9 @@ func encodeSearchAPIRequestWithBytes(ctx context.Context, r *http.Request, reque
 
 	tmpReq := request.(SearchAPIRequestWithBytes)
 
-	var buf bytes.Buffer = bytes.NewBuffer(tmpReq.bytes)
+	var buf *bytes.Buffer = bytes.NewBuffer(tmpReq.bytes)
 
-	r.Body = ioutil.NopCloser(&buf)
+	r.Body = ioutil.NopCloser(buf)
 	return nil
 
 }

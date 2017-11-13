@@ -42,9 +42,9 @@ func (s searchServiceImp) SimpleSearchReturnLatestVersionsofTermBeingEitherGroup
 
 	rowCount := -1 //meaning there is no row limit
 
-	rowCount = req.metaData.rowCount
+	rowCount = req.MetaData.RowCount
 	inp := mavenCli.SimpleSearchReturnAllVersionsofFullySpecifiedGroupIdAndArtifactIDRequest{
-		SearchKeyWord: req.keyword, RowCount: rowCount,
+		SearchKeyWord: req.Keyword, RowCount: rowCount,
 	}
 
 	//add circuit breaker and rate limiter and open tracing later
@@ -54,7 +54,7 @@ func (s searchServiceImp) SimpleSearchReturnLatestVersionsofTermBeingEitherGroup
 	if err != nil {
 		errTmp, isOk := err.(common.APIError)
 		if isOk {
-			errTmp.Id = req.id
+			errTmp.Id = req.Id
 			return nil, errTmp
 		}
 		return nil, err
@@ -64,27 +64,28 @@ func (s searchServiceImp) SimpleSearchReturnLatestVersionsofTermBeingEitherGroup
 
 	var searchAPIResponse SearchAPIResponse
 
-	searchAPIResponse.app = req.app
-	searchAPIResponse.direction = req.direction
-	searchAPIResponse.id = req.id
-	searchAPIResponse.startId = req.startId
+	searchAPIResponse.App = req.App
+	searchAPIResponse.Direction = req.Direction
+	searchAPIResponse.Id = req.Id
+	searchAPIResponse.StartId = req.StartId
 	//searchAPIResponse.resultSet[0].
 
-	searchAPIResponse.metaData.rowCount = len(response.Response.Docs)
+	searchAPIResponse.MetaData.RowCount = len(response.Response.Docs)
 
-	searchAPIResponse.resultSet = make([]SearchAPIResponseDoc, searchAPIResponse.metaData.rowCount, searchAPIResponse.metaData.rowCount)
+	searchAPIResponse.ResultSet = make([]SearchAPIResponseDoc, searchAPIResponse.MetaData.RowCount,
+		searchAPIResponse.MetaData.RowCount)
 	for i, el := range response.Response.Docs {
 		var doc SearchAPIResponseDoc
 		//fallback image to maven //change to your webserver at sometime:)
-		doc.imgURI = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Maven_logo.svg/320px-Maven_logo.svg.png"
+		doc.ImgURI = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Maven_logo.svg/320px-Maven_logo.svg.png"
 
-		doc.id = strconv.Itoa(i)
-		doc.params.artifactId = el.A
-		doc.params.groupId = el.G
-		doc.repoType = "maven" //make it const
-		doc.description = ""
-		doc.title = el.A
-		searchAPIResponse.resultSet[i] = doc
+		doc.Id = strconv.Itoa(i)
+		doc.Params.ArtifactId = el.A
+		doc.Params.GroupId = el.G
+		doc.RepoType = "maven" //make it const
+		doc.Description = ""
+		doc.Title = el.A
+		searchAPIResponse.ResultSet[i] = doc
 
 	}
 	return searchAPIResponse, nil

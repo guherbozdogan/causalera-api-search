@@ -3,7 +3,7 @@ package servicetest
 import (
 	"context"
 	"fmt"
-	. "github.com/guherbozdogan/causalera-api-search/main"
+	. "github.com/guherbozdogan/causalera-api-search/exec"
 	. "github.com/guherbozdogan/causalera-api-search/service"
 	util "github.com/guherbozdogan/causalera-api-search/servicetest/util"
 	. "github.com/onsi/ginkgo"
@@ -14,11 +14,11 @@ var _ = Describe("It testing search rest api", func() {
 
 	Describe("test Search GET method", func() {
 		Context("with normal parameters ", func() {
-			var service = It("what to write here then:)", func() {
+			It("what to write here then:)", func() {
 				//Ω(obictRecordIO).NotTo(Equal(nil))
 
 				errc := make(chan error)
-				RunServices(errc)
+				go RunServices(errc)
 
 				tmpEndPoints, err := util.MakeClientEndpoints("http://search.maven.org")
 

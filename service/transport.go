@@ -20,7 +20,7 @@ import (
 	//	"bytes"
 	//	"context"
 	//	"encoding/json"
-	"errors"
+	//	"errors"
 	//	"io/ioutil"
 
 	stdopentracing "github.com/opentracing/opentracing-go"
