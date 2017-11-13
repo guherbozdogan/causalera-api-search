@@ -17,10 +17,13 @@ var _ = Describe("It testing search rest api", func() {
 			It("what to write here then:)", func() {
 				//Ω(obictRecordIO).NotTo(Equal(nil))
 
+				var recChan chan []byte
+				recChan = make(chan []byte, 1000)
+
 				errc := make(chan error)
 				go RunServices(errc)
 
-				tmpEndPoints, err := util.MakeClientEndpoints("http://search.maven.org")
+				tmpEndPoints, err := util.MakeClientEndpoints("http://127.0.0.1:8082")
 
 				inp := SearchAPIRequest{
 					Id:        "12132332",
@@ -41,6 +44,9 @@ var _ = Describe("It testing search rest api", func() {
 				//iii := resp.(SimpleSearchReturnAllVersionsofFullySpecifiedGroupIdAndArtifactIDResponse)
 				//
 				//Ω(iii).Should(Not(Equal(nil)))
+				var s []byte
+
+				Eventually(recChan, 1099990000).Should(Receive(&s))
 
 				Ω(err).Should(Equal(nil))
 
