@@ -5,6 +5,7 @@ import (
 	"fmt"
 	. "github.com/guherbozdogan/causalera-api-search/main"
 	. "github.com/guherbozdogan/causalera-api-search/service"
+	util "github.com/guherbozdogan/causalera-api-search/servicetest/util"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -19,13 +20,19 @@ var _ = Describe("It testing search rest api", func() {
 				errc := make(chan error)
 				RunServices(errc)
 
-				tmpEndPoints, err := MakeClientEndpoints("http://search.maven.org")
+				tmpEndPoints, err := util.MakeClientEndpoints("http://search.maven.org")
 
-				inp := SimpleSearchReturnAllVersionsofFullySpecifiedGroupIdAndArtifactIDRequest{
-					SearchKeyWord: "guice", RowCount: 20,
+				inp := SearchAPIRequest{
+					Id:        "12132332",
+					App:       "search.app",
+					Version:   "0.1",
+					Keyword:   "guice",
+					StartId:   "0",
+					Direction: "asc",
 				}
+				inp.MetaData.RowCount = 20
 
-				resp, err := tmpEndPoints.SimpleSearchReturnLatestVersionsofTermBeingEitherGroupIDorArtifactID(context.Background(),
+				resp, err := tmpEndPoints.SearchAPIEndpoint(context.Background(),
 					inp)
 
 				if resp == nil {

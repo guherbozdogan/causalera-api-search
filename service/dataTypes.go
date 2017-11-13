@@ -14,39 +14,39 @@ import (
 //}
 
 type SearchAPIRequest struct {
-	id        string `json:"id,omitempty"`
-	keyword   string `json:"keyword,omitempty"`
-	app       string `json:"app,omitempty"`
-	version   string `json:"version,omitempty"`
-	startId   string `json:"startId,omitempty"`
-	direction string `json:"direction,omitempty"`
-	metaData  struct {
-		rowCount int `json:"rowCount,omitempty"`
+	Id        string `json:"id,omitempty"`
+	Keyword   string `json:"keyword,omitempty"`
+	App       string `json:"app,omitempty"`
+	Version   string `json:"version,omitempty"`
+	StartId   string `json:"startId,omitempty"`
+	Direction string `json:"direction,omitempty"`
+	MetaData  struct {
+		RowCount int `json:"rowCount,omitempty"`
 	} `json:"metaData,omitempty"`
 }
 type SearchAPIResponseDoc struct {
-	id       string `json:"id,omitempty"`
-	title    string `json:"title,omitempty"`
-	repoType string `json:"repoType,omitempty"`
-	params   struct {
-		groupId    string `json:"groupId,omitempty"`
-		artifactId string `json:"artifactId,omitempty"`
+	Id       string `json:"id,omitempty"`
+	Title    string `json:"title,omitempty"`
+	RepoType string `json:"repoType,omitempty"`
+	Params   struct {
+		GroupId    string `json:"groupId,omitempty"`
+		ArtifactId string `json:"artifactId,omitempty"`
 	} `json:"params,omitempty"`
 
-	imgURI      string `json:"imgURI,omitempty"`
-	description string `json:"description,omitempty"`
+	ImgURI      string `json:"imgURI,omitempty"`
+	Description string `json:"description,omitempty"`
 }
 type SearchAPIResponse struct {
-	id        string `json:"id,omitempty"`
-	app       string `json:"app,omitempty"`
-	version   string `json:"version,omitempty"`
-	startId   string `json:"startId,omitempty"`
-	direction string `json:"direction,omitempty"`
-	metaData  struct {
-		rowCount int `json:"rowCount,omitempty"`
+	Id        string `json:"id,omitempty"`
+	App       string `json:"app,omitempty"`
+	Version   string `json:"version,omitempty"`
+	StartId   string `json:"startId,omitempty"`
+	Direction string `json:"direction,omitempty"`
+	MetaData  struct {
+		RowCount int `json:"rowCount,omitempty"`
 	} `json:"metaData,omitempty"`
 
-	resultSet []SearchAPIResponseDoc `json:"resultSet,omitempty"`
+	ResultSet []SearchAPIResponseDoc `json:"resultSet,omitempty"`
 }
 
 /*
