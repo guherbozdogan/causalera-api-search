@@ -2,56 +2,89 @@ package servicetest
 
 import (
 	"context"
-	"fmt"
-	. "github.com/guherbozdogan/causalera-api-search/exec"
+	//	"fmt"
+	//	"fmt"
+	//	. "github.com/guherbozdogan/causalera-api-search/exec"
 	. "github.com/guherbozdogan/causalera-api-search/service"
 	util "github.com/guherbozdogan/causalera-api-search/servicetest/util"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	//	"runtime"
+	"time"
 )
 
 var _ = Describe("It testing search rest api", func() {
 
-	Describe("test Search GET method", func() {
-		Context("with normal parameters ", func() {
-			It("what to write here then:)", func() {
-				//Ω(obictRecordIO).NotTo(Equal(nil))
+	//BeforeEach(func() {
+	//	server = ghttp.NewServer()
+	//	client = sprockets.NewClient(server.URL())
+	//})
+	//
+	//AfterEach(func() {
+	//	//shut down the server between tests
+	//	server.Close()
+	//})
 
-				var recChan chan []byte
-				recChan = make(chan []byte, 1000)
+	Context("test Search GET method", func() {
+		It("with normal json parameters and path", func() {
+			//			runtime.GOMAXPROCS(2)
 
-				errc := make(chan error)
-				go RunServices(errc)
+			defer GinkgoRecover()
 
-				tmpEndPoints, err := util.MakeClientEndpoints("http://127.0.0.1:8082")
+			//			errc := make(chan error)
+			//			go RunServices(errc)
+			time.Sleep(1000 * time.Millisecond)
+			tmpEndPoints, errMakeClients := util.MakeClientEndpoints("http://127.0.0.1:8083")
+			Ω(errMakeClients).Should(BeNil())
 
-				inp := SearchAPIRequest{
-					Id:        "12132332",
-					App:       "search.app",
-					Version:   "0.1",
-					Keyword:   "guice",
-					StartId:   "0",
-					Direction: "asc",
-				}
-				inp.MetaData.RowCount = 20
+			inp := SearchAPIRequest{
+				Id:        "12132332",
+				App:       "search.app",
+				Version:   "0.1",
+				Keyword:   "guice",
+				StartId:   "0",
+				Direction: "asc",
+			}
+			inp.MetaData.RowCount = 5
 
-				resp, err := tmpEndPoints.SearchAPIEndpoint(context.Background(),
-					inp)
+			resp, _ := tmpEndPoints.SearchAPIEndpoint(context.Background(),
+				inp)
 
-				if resp == nil {
-					fmt.Println("hey")
-				}
-				//iii := resp.(SimpleSearchReturnAllVersionsofFullySpecifiedGroupIdAndArtifactIDResponse)
-				//
-				//Ω(iii).Should(Not(Equal(nil)))
-				var s []byte
+			dataStruct, isOk := resp.(SearchAPIResponse)
 
-				Eventually(recChan, 1099990000).Should(Receive(&s))
-
-				Ω(err).Should(Equal(nil))
-
-			})
+			//Ω(err).Should(Equal(nil))
+			Ω(isOk).Should(Equal(true))
+			Ω(dataStruct.MetaData.RowCount).Should(Equal(5))
+			Ω(len(dataStruct.ResultSet)).Should(Equal(5))
 
 		})
+		//It("with wrong path", func() {
+		//	errc := make(chan error)
+		//	go RunServices(errc)
+		//
+		//	tmpEndPoints, err := util.MakeClientEndpoints("http://127.0.0.1:8083")
+		//
+		//	inp := SearchAPIRequest{
+		//		Id:        "12132332",
+		//		App:       "search.app",
+		//		Version:   "0.1",
+		//		Keyword:   "guice",
+		//		StartId:   "0",
+		//		Direction: "asc",
+		//	}
+		//	inp.MetaData.RowCount = 5
+		//
+		//	resp, err := tmpEndPoints.SearchAPIEndpointWithWrongJSON(context.Background(),
+		//		inp)
+		//
+		//	dataStruct, errJs := resp.(SearchAPIResponse)
+		//
+		//	Ω(err).Should(Equal(nil))
+		//	Ω(errJs).Should(Equal(nil))
+		//	Ω(dataStruct.MetaData.RowCount).Should(Equal(5))
+		//	Ω(len(dataStruct.ResultSet)).Should(Equal(5))
+		//
+		//})
+
 	})
 })

@@ -201,7 +201,7 @@ func RunServices(errc chan error) {
 		h := MakeHTTPHandler(endpoints, tracer, logger)
 		logger.Log("addr", *httpAddr)
 		//errc <- http.ListenAndServe(*httpAddr, h)
-		errc <- http.ListenAndServe(":8082", h)
+		errc <- http.ListenAndServe(":8083", h)
 	}()
 
 	logger.Log("exit", <-errc)

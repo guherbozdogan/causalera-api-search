@@ -32,7 +32,7 @@ func MakeClientEndpoints(instance string) (Endpoints, error) {
 			encodeSearchAPIReq,
 			decodeSearchAPIReq, options...).Endpoint(),
 		SearchAPIEndpointWithWrongPath: httptransport.NewClient("GET", tgt,
-			encodeSearchAPIReq,
+			encodeWrongPathForSearchAPIReq,
 			decodeSearchAPIReq, options...).Endpoint(),
 		SearchAPIEndpointWithMissingJSONParam: httptransport.NewClient("GET", tgt,
 			encodeSearchAPIReq,

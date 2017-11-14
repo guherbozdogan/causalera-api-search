@@ -41,6 +41,19 @@ func encodeSearchAPIReq(ctx context.Context, r *http.Request, request interface{
 	return nil
 
 }
+func encodeWrongPathForSearchAPIReq(ctx context.Context, r *http.Request, request interface{}) error {
+
+	//tmpReq := request.(service.SearchAPIRequest)
+	r.Method, r.URL.Path = "GET", "/search/libs2"
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(request); err != nil {
+		return err
+	}
+	r.Body = ioutil.NopCloser(&buf)
+	return nil
+
+}
 
 func errorDecoder(resp *http.Response) error {
 
@@ -80,6 +93,7 @@ func decodeSearchAPIReq(_ context.Context, resp *http.Response) (interface{}, er
 	if errReadRsp == nil {
 
 		bodyString := string(bodyBytes)
+		log.Println("body bbytes", bodyString)
 
 		if err := json.Unmarshal(bodyBytes, &response); err != nil {
 			log.Fatal(ErrJSONParseError)

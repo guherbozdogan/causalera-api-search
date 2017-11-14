@@ -50,7 +50,7 @@ func encodeSimpleSearchReturnLatestVersionsofTermBeingEitherGroupIDorArtifactID(
 	//q := req.URL.Query()
 	tmp.Add("q", tmpReq.SearchKeyWord)
 	i := strconv.Itoa(tmpReq.RowCount)
-	tmp.Add("rowCount", i)
+	tmp.Add("rows", i)
 	tmp.Add("wt", "json")
 
 	req.URL.RawQuery = tmp.Encode()

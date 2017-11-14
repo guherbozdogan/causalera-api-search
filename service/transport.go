@@ -35,6 +35,13 @@ type errorWrapper struct {
 }
 
 func errorEncoder(_ context.Context, err error, w http.ResponseWriter) {
+	errorData, isOk := err.(common.APIError)
+	if isOk == true {
+		w.WriteHeader(errorData.StatusCodeVal)
+		json.NewEncoder(w).Encode(errorData)
+
+		return
+	}
 	code := http.StatusInternalServerError
 	msg := err.Error()
 
