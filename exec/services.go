@@ -38,7 +38,7 @@ import (
 func RunServices(errc chan error) {
 	var (
 		//debugAddr        = flag.String("debug.addr", ":8080", "Debug and metrics listen address")
-		httpAddr = flag.String("http.addr", ":8081", "HTTP listen address")
+		httpAddr = flag.String("http.addr", ":8083", "HTTP listen address")
 		//grpcAddr         = flag.String("grpc.addr", ":8082", "gRPC (HTTP) listen address")
 		//thriftAddr       = flag.String("thrift.addr", ":8083", "Thrift listen address")
 		//thriftProtocol   = flag.String("thrift.protocol", "binary", "binary, compact, json, simplejson")
@@ -161,18 +161,22 @@ func RunServices(errc chan error) {
 
 	// Endpoint domain.
 	var searchEndpoint endpoint.Endpoint
+	var stopEndpoint endpoint.Endpoint
 	{
 		//sumDuration := duration.With("method", "Sum")
 		//sumLogger := log.With(logger, "method", "Sum")
 
 		searchEndpoint = MakeSimpleSearchReturnLatestVersionsofTermBeingEitherGroupIDorArtifactIDEndPoint(
 			service)
+
+		stopEndpoint = MakeStopServerEndPoint(service, errc)
 		//searchEndpoint = opentracing.TraceServer(tracer, "Sum")(sumEndpoint)
 		//sumEndpoint = addsvc.EndpointInstrumentingMiddleware(sumDuration)(sumEndpoint)
 		//sumEndpoint = addsvc.EndpointLoggingMiddleware(sumLogger)(sumEndpoint)
 	}
 	endpoints := Endpoints{
 		SimpleSearchReturnLatestVersionsofTermBeingEitherGroupIDorArtifactIDEndPoint: searchEndpoint,
+		StopServerEndPoint: stopEndpoint,
 	}
 
 	//ctx := context.Background()

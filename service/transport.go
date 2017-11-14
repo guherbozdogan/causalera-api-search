@@ -53,6 +53,13 @@ func encodeSimpleSearchAPIResponse(_ context.Context, w http.ResponseWriter, res
 	return json.NewEncoder(w).Encode(response)
 }
 
+func encodeStopResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
+	return json.NewEncoder(w).Encode(response)
+}
+func decodeStopRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	return StopResponse{}, nil
+}
+
 func decodeSimpleSearchAPIReq(_ context.Context, r *http.Request) (interface{}, error) {
 
 	var req SearchAPIRequest
@@ -84,6 +91,13 @@ func MakeHTTPHandler(endpoints Endpoints, tracer stdopentracing.Tracer, logger l
 		decodeSimpleSearchAPIReq,
 		encodeSimpleSearchAPIResponse,
 		append(options, httptransport.ServerBefore(opentracing.FromHTTPRequest(tracer, "SimpleSearchAPICall",
+			logger)))...,
+	))
+	m.Handle("/stop", httptransport.NewServer(
+		endpoints.SimpleSearchReturnLatestVersionsofTermBeingEitherGroupIDorArtifactIDEndPoint,
+		decodeStopRequest,
+		encodeStopResponse,
+		append(options, httptransport.ServerBefore(opentracing.FromHTTPRequest(tracer, "StopServer",
 			logger)))...,
 	))
 	return m

@@ -13,6 +13,8 @@ import (
 //
 //}
 
+type StopResponse struct {
+}
 type SearchAPIRequest struct {
 	Id        string `json:"id,omitempty"`
 	Keyword   string `json:"keyword,omitempty"`

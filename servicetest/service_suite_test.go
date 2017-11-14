@@ -4,12 +4,14 @@ import (
 	"fmt"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	//	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
-	"strconv"
+	//	"strconv"
 	"syscall"
 	"testing"
+	"time"
 )
 
 func execCmd(command string) (*exec.Cmd, error) {
@@ -29,7 +31,7 @@ var cmd *exec.Cmd
 var err error
 var _ = BeforeSuite(func() {
 	fmt.Println("whatsup")
-	cmd, err = execCmd("cd $GOPATH/src/github.com/guherbozdogan/causalera-api-search;go run main/main.go")
+	cmd, err = execCmd("cd $GOPATH/src/github.com/guherbozdogan/causalera-api-search;go install main/main.go; cd  $GOPATH/bin; ./main & echo  $! > outtmp")
 
 	if err != nil {
 		log.Fatal(err)
@@ -37,11 +39,10 @@ var _ = BeforeSuite(func() {
 })
 
 var _ = AfterSuite(func() {
-	fmt.Println("whats?")
-	fmt.Println("whats? %d", cmd.Process.Pid)
-	cmd := fmt.Sprintf("kill -9 %s", strconv.Itoa(cmd.Process.Pid))
+	cmd := fmt.Sprintf("cd $GOPATH/bin; cat outtmp | xargs kill -9 ")
 	fmt.Println(cmd)
 	execCmd(cmd)
+	time.Sleep(1400 * time.Millisecond)
 	//fmt.Println("proc is %d", cmd.Process.Pid)
 })
 

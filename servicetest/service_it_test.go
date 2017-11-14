@@ -30,9 +30,6 @@ var _ = Describe("It testing search rest api", func() {
 			//			runtime.GOMAXPROCS(2)
 
 			defer GinkgoRecover()
-
-			//			errc := make(chan error)
-			//			go RunServices(errc)
 			time.Sleep(1000 * time.Millisecond)
 			tmpEndPoints, errMakeClients := util.MakeClientEndpoints("http://127.0.0.1:8083")
 			Ω(errMakeClients).Should(BeNil())
@@ -52,39 +49,40 @@ var _ = Describe("It testing search rest api", func() {
 
 			dataStruct, isOk := resp.(SearchAPIResponse)
 
-			//Ω(err).Should(Equal(nil))
 			Ω(isOk).Should(Equal(true))
 			Ω(dataStruct.MetaData.RowCount).Should(Equal(5))
 			Ω(len(dataStruct.ResultSet)).Should(Equal(5))
 
 		})
-		//It("with wrong path", func() {
-		//	errc := make(chan error)
-		//	go RunServices(errc)
-		//
-		//	tmpEndPoints, err := util.MakeClientEndpoints("http://127.0.0.1:8083")
-		//
-		//	inp := SearchAPIRequest{
-		//		Id:        "12132332",
-		//		App:       "search.app",
-		//		Version:   "0.1",
-		//		Keyword:   "guice",
-		//		StartId:   "0",
-		//		Direction: "asc",
-		//	}
-		//	inp.MetaData.RowCount = 5
-		//
-		//	resp, err := tmpEndPoints.SearchAPIEndpointWithWrongJSON(context.Background(),
-		//		inp)
-		//
-		//	dataStruct, errJs := resp.(SearchAPIResponse)
-		//
-		//	Ω(err).Should(Equal(nil))
-		//	Ω(errJs).Should(Equal(nil))
-		//	Ω(dataStruct.MetaData.RowCount).Should(Equal(5))
-		//	Ω(len(dataStruct.ResultSet)).Should(Equal(5))
-		//
-		//})
+		It("with wrong path", func() {
+
+			defer GinkgoRecover()
+
+			//time.Sleep(1000 * time.Millisecond)
+
+			//			errc := make(chan error)
+			//			go RunServices(errc)
+			tmpEndPoints, errMakeClients := util.MakeClientEndpoints("http://127.0.0.1:8083")
+			Ω(errMakeClients).Should(BeNil())
+
+			inp := SearchAPIRequest{
+				Id:        "12132332",
+				App:       "search.app",
+				Version:   "0.1",
+				Keyword:   "guice",
+				StartId:   "0",
+				Direction: "asc",
+			}
+			inp.MetaData.RowCount = 5
+
+			resp, errR := tmpEndPoints.SearchAPIEndpointWithWrongPath(context.Background(),
+				inp)
+
+			//Ω(err).Should(Equal(nil))
+			Ω(resp).Should(BeNil())
+			Ω(errR).Should(Equal(util.ErrHttp404Error))
+
+		})
 
 	})
 })

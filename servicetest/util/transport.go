@@ -57,6 +57,10 @@ func encodeWrongPathForSearchAPIReq(ctx context.Context, r *http.Request, reques
 
 func errorDecoder(resp *http.Response) error {
 
+	if resp.StatusCode == 404 {
+
+		return ErrHttp404Error
+	}
 	bodyBytes, errReadRsp := ioutil.ReadAll(resp.Body)
 	var response common.APIError
 	if errReadRsp == nil {
@@ -93,7 +97,6 @@ func decodeSearchAPIReq(_ context.Context, resp *http.Response) (interface{}, er
 	if errReadRsp == nil {
 
 		bodyString := string(bodyBytes)
-		log.Println("body bbytes", bodyString)
 
 		if err := json.Unmarshal(bodyBytes, &response); err != nil {
 			log.Fatal(ErrJSONParseError)
