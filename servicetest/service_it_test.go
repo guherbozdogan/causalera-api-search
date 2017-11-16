@@ -10,8 +10,19 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	//	"runtime"
+	"fmt"
 	"time"
 )
+
+func recoverFunc() {
+	if r := recover(); r != nil {
+		fmt.Println("Recovered in f", r)
+		cmd := fmt.Sprintf("cd $GOPATH/bin; cat outtmp | xargs kill -9 ")
+		fmt.Println(cmd)
+		execCmd(cmd)
+		time.Sleep(1400 * time.Millisecond)
+	}
+}
 
 var _ = Describe("It testing search rest api", func() {
 
@@ -29,7 +40,8 @@ var _ = Describe("It testing search rest api", func() {
 		It("with normal json parameters and path", func() {
 			//			runtime.GOMAXPROCS(2)
 
-			defer GinkgoRecover()
+			defer recoverFunc()
+
 			time.Sleep(1000 * time.Millisecond)
 			tmpEndPoints, errMakeClients := util.MakeClientEndpoints("http://127.0.0.1:8083")
 			Ω(errMakeClients).Should(BeNil())
@@ -54,9 +66,28 @@ var _ = Describe("It testing search rest api", func() {
 			Ω(len(dataStruct.ResultSet)).Should(Equal(5))
 
 		})
-		It("with wrong path", func() {
+		//mssing rowCount param
+		It("with missing rowcount param", func() {
 
-			defer GinkgoRecover()
+			defer recoverFunc()
+
+			tmpEndPoints, errMakeClients := util.MakeClientEndpoints("http://127.0.0.1:8083")
+			Ω(errMakeClients).Should(BeNil())
+
+			inp := util.SearchAPIRequestWithBytes{
+				Bytes: []byte(ReqWithMissingRowCountJSONStr),
+			}
+
+			resp, errR := tmpEndPoints.SearchAPIEndpointWithWrongJSON(context.Background(),
+				inp)
+
+			Ω(errR).Should(MatchError(util.ErrAPIError))
+			Ω(resp).Should(BeNil())
+		})
+
+		It("with non-correct json", func() {
+
+			defer recoverFunc()
 
 			//time.Sleep(1000 * time.Millisecond)
 
@@ -65,23 +96,15 @@ var _ = Describe("It testing search rest api", func() {
 			tmpEndPoints, errMakeClients := util.MakeClientEndpoints("http://127.0.0.1:8083")
 			Ω(errMakeClients).Should(BeNil())
 
-			inp := SearchAPIRequest{
-				Id:        "12132332",
-				App:       "search.app",
-				Version:   "0.1",
-				Keyword:   "guice",
-				StartId:   "0",
-				Direction: "asc",
+			inp := util.SearchAPIRequestWithBytes{
+				Bytes: []byte(StrReqWithIncorrectJSON),
 			}
-			inp.MetaData.RowCount = 5
 
-			resp, errR := tmpEndPoints.SearchAPIEndpointWithWrongPath(context.Background(),
+			resp, errR := tmpEndPoints.SearchAPIEndpointWithWrongJSON(context.Background(),
 				inp)
 
-			//Ω(err).Should(Equal(nil))
+			Ω(errR).Should(MatchError(util.ErrAPIError))
 			Ω(resp).Should(BeNil())
-			Ω(errR).Should(Equal(util.ErrHttp404Error))
-
 		})
 
 	})

@@ -111,7 +111,7 @@ func decodeSimpleSearchReturnLatestVersionsofTermBeingEitherGroupIDorArtifactID(
 				ErrorPage:     "", Version: common.StrVersion,
 				SupportErrorCode: SystemCode + SubsystemCode + StrInternalServerErrorCode,
 			}
-			log.Fatal(err)
+			log.Println(err)
 			return nil, tmpErr
 		}
 

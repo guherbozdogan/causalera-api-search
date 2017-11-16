@@ -47,6 +47,17 @@ var _ = AfterSuite(func() {
 })
 
 func TestFrame(t *testing.T) {
+
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered in f", r)
+			cmd := fmt.Sprintf("cd $GOPATH/bin; cat outtmp | xargs kill -9 ")
+			fmt.Println(cmd)
+			execCmd(cmd)
+			time.Sleep(1400 * time.Millisecond)
+		}
+	}()
+
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Service Test Suite")
 }
